@@ -96,7 +96,9 @@ void initializeOpenSSL() {
   SSL_library_init();
   SSL_load_error_strings();
   // static locking
-  mutexes = boost::shared_array<Mutex>(new Mutex[ ::CRYPTO_num_locks()]);
+  // TODO : Comment to fix bulid error
+  //mutexes = boost::shared_array<Mutex>(new Mutex[ ::CRYPTO_num_locks()]);
+  mutexes = boost::shared_array<Mutex>(new Mutex[1]);
   if (mutexes == NULL) {
     throw TTransportException(TTransportException::INTERNAL_ERROR,
                               "initializeOpenSSL() failed, "
@@ -139,9 +141,9 @@ static char uppercase(char c);
 SSLContext::SSLContext(const SSLProtocol& protocol) {
   if (protocol == SSLTLS) {
     ctx_ = SSL_CTX_new(SSLv23_method());
-  } else if (protocol == SSLv3) {
+  } /* else if (protocol == SSLv3) {
     ctx_ = SSL_CTX_new(SSLv3_method());
-  } else if (protocol == TLSv1_0) {
+  } */ else if (protocol == TLSv1_0) {
     ctx_ = SSL_CTX_new(TLSv1_method());
   } else if (protocol == TLSv1_1) {
     ctx_ = SSL_CTX_new(TLSv1_1_method());
